@@ -1,25 +1,43 @@
+require "rack"
 require "rack-proxy"
-require "./app"
 require "json"
+require "optparse"
+
+require "./app"
 
 
-ROUTES = Hash.new("")
+# Parse command line options
+options = {}
+optparse = OptionParser.new do |opts|
+  opts.banner = "Learning Option parsing in Ruby"
 
-Dir.glob("../**").each_with_index do |app, index|
-  path = app + "/app.json"
+  opts.on("-p", "--path PATH", "Path of the constelation of Homesteading apps") do |opt_path|
+    options[:hs_path] = opt_path
+  end
+end
+optparse.parse!
 
-  if File.exist?(path)
-    app_file  = JSON.parse(File.read(path))
+
+
+# Build up routes hash from app.json files
+ROUTES  = Hash.new("")
+hs_path = options[:hs_path] || ".."
+
+Dir.glob("#{hs_path}/**").each_with_index do |app, index|
+  app_file_path = app + "/app.json"
+
+  if File.exist?(app_file_path)
+    app_file  = JSON.parse(File.read(app_file_path))
     app_route = app_file["routes"]
 
     if app_route
       app_path = app_route["path"]
-      port     = index + 3000
+      port     = index + 3001
 
       if app_file["name"].downcase =~ /feed/
-        ROUTES["feed"] = port
+        ROUTES["feed"]   = port
       else
-        ROUTES[route]  = port
+        ROUTES[app_path] = port
       end
     end
 
@@ -31,6 +49,7 @@ Dir.glob("../**").each_with_index do |app, index|
 end
 
 
+# Write error messages
 no_routes = '
 Homesteading Router needs some HS:Publisher apps with app.json files.
 
@@ -49,9 +68,11 @@ Each app.json file needs a route in it:
 '
 
 
+# Exit or Run!
 if ROUTES == {}
   puts no_routes
   exit
 else
-  run App.new
+  puts ROUTES
+  Rack::Handler::WEBrick.run(App.new, Port: 3000)
 end
