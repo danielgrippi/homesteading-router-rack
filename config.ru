@@ -31,18 +31,29 @@ Dir.glob("#{hs_path}/**").each_with_index do |app, index|
     app_route = app_file["routes"]
 
     if app_route
+      app_name = app_file["name"]
       app_path = app_route["path"]
-      port     = index + 3001
+      app_port     = index + 3001
 
-      if app_file["name"].downcase =~ /feed/
-        ROUTES["feed"]   = port
+      app_config = {
+        "app_dir" => app,
+        "port"    => app_port
+      }
+
+      if app_name.downcase =~ /feed/
+        ROUTES["feed"] = app_config
       else
-        ROUTES[app_path] = port
+        ROUTES[app_path] = app_config
       end
+
     end
 
-    unless ROUTES == {}
-      ROUTES["assets"] = 9999 # TEMP HACK TODO FIXME
+    # TEMP HACK TODO FIXME
+     unless ROUTES == {}
+      ROUTES["assets"] = {
+        "app_dir" => "../assets",
+        "port"    => 9999
+      }
     end
 
   end
@@ -74,5 +85,8 @@ if ROUTES == {}
   exit
 else
   puts ROUTES
+  # .each do |route|
+
+  # end
   Rack::Handler::WEBrick.run(App.new, Port: 3000)
 end

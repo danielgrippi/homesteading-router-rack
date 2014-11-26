@@ -5,9 +5,9 @@ class App < Rack::Proxy
     path_pieces = request.path.split("/").reject{ |i| i == "" }
 
     if request.path == "/"
-      port = ROUTES["feed"]
+      port = ROUTES["feed"]["port"]
     else
-      port = ROUTES[path_pieces.first]
+      port = ROUTES[path_pieces.first]["port"]
     end
 
     env["HTTP_HOST"] = "localhost:#{port}"
