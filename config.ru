@@ -2,7 +2,6 @@ require "rack"
 require "rack-proxy"
 require "json"
 require "optparse"
-
 require "./homesteading/router"
 
 
@@ -17,6 +16,24 @@ optparse = OptionParser.new do |opts|
 end
 optparse.parse!
 
+
+# Write error messages
+no_routes = '
+Homesteading Router needs some HS:Publisher apps with app.json files.
+
+For example:
+  /my-site
+  /my-site/homesteading-rack-router
+  /my-site/homesteading-feed/app.json
+  /my-site/homesteading-note/app.json
+  /my-site/homesteading-photo/app.json"
+
+Each app.json file needs a route in it:
+  "routes": {
+    "path": "notes"
+  }
+
+'
 
 
 # Build up routes hash from app.json files
@@ -41,7 +58,7 @@ Dir.glob("#{hs_path}/**").each_with_index do |app, index|
       }
 
       if app_name.downcase =~ /feed/
-        ROUTES["feed"] = app_config
+        ROUTES["feed"]   = app_config
       else
         ROUTES[app_path] = app_config
       end
@@ -49,7 +66,7 @@ Dir.glob("#{hs_path}/**").each_with_index do |app, index|
     end
 
     # TEMP HACK TODO FIXME
-     unless ROUTES == {}
+    unless ROUTES == {}
       ROUTES["assets"] = {
         "app_dir" => "../assets",
         "port"    => 9999
@@ -60,33 +77,19 @@ Dir.glob("#{hs_path}/**").each_with_index do |app, index|
 end
 
 
-# Write error messages
-no_routes = '
-Homesteading Router needs some HS:Publisher apps with app.json files.
-
-For example:
-  /my-site
-  /my-site/homesteading-rack-router
-  /my-site/homesteading-feed/app.json
-  /my-site/homesteading-note/app.json
-  /my-site/homesteading-photo/app.json"
-
-Each app.json file needs a route in it:
-  "routes": {
-    "path": "notes"
-  }
-
-'
-
-
 # Exit or Run!
 if ROUTES == {}
   puts no_routes
   exit
 else
-  puts ROUTES
-  # .each do |route|
+  # Start all of the HS apps
+  ROUTES.each do |route, app|
+    next if route == "assets" # TEMP HACK TODO FIXME
 
-  # end
+    puts   "#{File.expand_path(app["app_dir"])}/bin/rails server -d --port #{app["port"].to_s}"
+    system "#{File.expand_path(app["app_dir"])}/bin/rails server -d --port #{app["port"].to_s}"
+  end
+
+  # Start the router
   Rack::Handler::WEBrick.run(Homesteading::Router.new, Port: 3000)
 end
