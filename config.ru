@@ -5,16 +5,17 @@ require "optparse"
 require "./homesteading/router"
 
 
-# Parse command line options
-options = {}
-optparse = OptionParser.new do |opts|
-  opts.banner = "Learning Option parsing in Ruby"
-
-  opts.on("-p", "--path PATH", "Path of the constelation of Homesteading apps") do |opt_path|
-    options[:hs_path] = opt_path
+# Kill all HS:Publisher apps when HS:Router is stopped
+ROUTERS = []
+Signal.trap("INT") do
+  ROUTERS.each do |io|
+    puts "Stopping HS:Publisher app at PID: #{io.pid}"
+    Process.kill "SIGINT", io.pid
   end
+
+  Homesteading::Router.stop
+  exit
 end
-optparse.parse!
 
 
 # Write error messages
@@ -38,7 +39,7 @@ Each app.json file needs a route in it:
 
 # Build up routes hash from app.json files
 ROUTES  = Hash.new("")
-hs_path = options[:hs_path] || ".."
+hs_path = ".." # TODO check an ENV for hs_path first
 
 Dir.glob("#{hs_path}/**").each_with_index do |app, index|
   app_file_path = app + "/app.json"
@@ -85,11 +86,9 @@ else
   # Start all of the HS apps
   ROUTES.each do |route, app|
     next if route == "assets" # TEMP HACK TODO FIXME
-
-    puts   "#{File.expand_path(app["app_dir"])}/bin/rails server -d --port #{app["port"].to_s}"
-    system "#{File.expand_path(app["app_dir"])}/bin/rails server -d --port #{app["port"].to_s}"
+    Homesteading::Router.start(app)
   end
 
   # Start the router
-  Rack::Handler::WEBrick.run(Homesteading::Router.new, Port: 3000)
+  run Homesteading::Router.new
 end
