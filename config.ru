@@ -3,7 +3,7 @@ require "rack-proxy"
 require "json"
 require "optparse"
 
-require "./app"
+require "./homesteading/router"
 
 
 # Parse command line options
@@ -88,5 +88,5 @@ else
   # .each do |route|
 
   # end
-  Rack::Handler::WEBrick.run(App.new, Port: 3000)
+  Rack::Handler::WEBrick.run(Homesteading::Router.new, Port: 3000)
 end
