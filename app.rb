@@ -1,14 +1,16 @@
 class App < Rack::Proxy
 
   def rewrite_env(env)
-    request = Rack::Request.new(env)
-    if request.path    =~ %r{^/notes}
-      env["HTTP_HOST"] = "localhost:3001"
-    elsif request.path =~ %r{^/photos}
-      env["HTTP_HOST"] = "localhost:3002"
+    request     = Rack::Request.new(env)
+    path_pieces = request.path.split("/").reject{ |i| i == "" }
+
+    if request.path == "/"
+      port = ROUTES[:feed]
     else
-      env["HTTP_HOST"] = "localhost:3000"
+      port = ROUTES[path_pieces.first.to_sym]
     end
+
+    env["HTTP_HOST"] = "localhost:#{port}"
     env
   end
 
