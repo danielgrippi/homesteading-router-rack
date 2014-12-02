@@ -1,7 +1,6 @@
 require "rack"
 require "rack-proxy"
 require "json"
-require "optparse"
 require "./homesteading/router"
 
 
