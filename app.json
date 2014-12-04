@@ -14,7 +14,7 @@
 
   "success_url": "/",
   "scripts": {
-    ""
+    "postdeploy": ""
   },
   "env": {
     "RAILS_ENV": "production",
