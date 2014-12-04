@@ -5,6 +5,7 @@ require "./homesteading/help"
 
 ROUTES = {}
 
+# Exit or build up routes table
 if ENV["HOMESTEADING_ROUTES"].nil?
   Homesteading::Help.print("nil_env_var")
   exit
@@ -15,7 +16,7 @@ else
   end
 end
 
-# Exit or Run!
+# Exit or run
 if ROUTES == {}
   Homesteading::Help.print("no_routes")
   exit
