@@ -2,42 +2,42 @@ require "rack"
 require "rack-proxy"
 require "./homesteading/router"
 
-# TODO build this up from ENV[HOMESTEADING_ROUTES]
-ROUTES = {
-  "articles"  => 3001,
-  "bookmarks" => 3002,
-  "events"    => 3003,
-  "feed"      => 3004,
-  "notes"     => 3005,
-  "photos"    => 3006,
-  "sounds"    => 3007,
-  "videos"    => 3008,
-  "walks"     => 3009,
-  "weights"   => 3010
-}
+ROUTES = {}
+
+if ENV["HOMESTEADING_ROUTES"].nil?
+  puts
+  puts
+  puts '* ENV["HOMESTEADING_ROUTES"] needs to be set before router can start'
+  puts "* Example:"
+  puts '  ENV["HOMESTEADING_ROUTES"]=articles:3001,feed:3002,notes:3003,photos:3004'
+  puts
+  exit
+else
+  ENV["HOMESTEADING_ROUTES"].split(",").each do |app|
+    route, port   = app.split(":")
+    routes[route] = port
+  end
+end
 
 # Exit or Run!
 if ROUTES == {}
-  puts '
-  Homesteading Router needs some HS:Publisher apps with app.json files.
+  puts
+  puts "* Homesteading Router needs some apps with app.json files"
+  puts
+  puts "* For example:"
+  puts "/my-site"
+  puts "/my-site/homesteading-rack-router"
+  puts "/my-site/homesteading-feed/app.json"
+  puts "/my-site/homesteading-note/app.json"
+  puts "/my-site/homesteading-photo/app.json"
+  puts
+  puts "* Each app.json file needs a route in it:"
+  puts '  "routes": {'
+  puts '    "path": "notes"'
+  puts '  }'
 
-  For example:
-    /my-site
-    /my-site/homesteading-rack-router
-    /my-site/homesteading-feed/app.json
-    /my-site/homesteading-note/app.json
-    /my-site/homesteading-photo/app.json"
-
-  Each app.json file needs a route in it:
-    "routes": {
-      "path": "notes"
-    }
-
-  '
+  puts
   exit
 else
-  # puts
-  # puts "ENV['HOMESTEADING_ROUTES']: #{ENV["HOMESTEADING_ROUTES"]}"
-  # puts "ROUTES:                     #{ROUTES}"
   run Homesteading::Router.new
 end
