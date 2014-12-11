@@ -17,7 +17,6 @@ A Rack based proxy server to coordinate multiple Homesteading apps as one site.
 
 [![Build Status](https://api.travis-ci.org/homesteading/homesteading-router-rack.png)](https://travis-ci.org/homesteading/homesteading-router-rack)
 [![Code Climate](https://codeclimate.com/github/homesteading/homesteading-router-rack.png)](https://codeclimate.com/github/homesteading/homesteading-router-rack)
-[![Gem Version](https://badge.fury.io/rb/homesteading.png)](http://badge.fury.io/rb/homesteading)
 [![Dependencies](https://gemnasium.com/homesteading/homesteading-router-rack.png?travis)](https://gemnasium.com/homesteading/homesteading-router-rack)
 
 
