@@ -8,7 +8,7 @@ ROUTES = {}
 # Exit or build up routes table
 if ENV["HOMESTEADING_ROUTES"].nil?
   Homesteading::Help.print("nil_env_var")
-  exit
+  exit 1
 else
   ENV["HOMESTEADING_ROUTES"].split(",").each do |app|
     route, port   = app.split(":")
@@ -19,7 +19,7 @@ end
 # Exit or run
 if ROUTES == {}
   Homesteading::Help.print("no_routes")
-  exit
+  exit 1
 else
   run Homesteading::Router.new
 end
