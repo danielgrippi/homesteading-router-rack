@@ -6,7 +6,8 @@ require "./homesteading/help"
 ROUTES = {}
 
 # APPS = ENV["HOMESTEADING_ROUTES"]
-APPS = "notes@@@sbbme-note.herokuapp.com,bookmarks@@@sbbme-bookmark.herokuapp.com"
+ENV["HOMESTEADING_ROUTES"] = "TESTING"
+APPS = "notes@@@sbbme-note.herokuapp.com,bookmarks@@@sbbme-bookmark.herokuapp.com,feed@@@sbbme-feed.herokuapp.com"
 
 # Exit or build up routes table
 if ENV["HOMESTEADING_ROUTES"].nil?
