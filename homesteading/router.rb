@@ -11,7 +11,8 @@ module Homesteading
         app = ROUTES[path_pieces.first]
       end
 
-      env["HTTP_HOST"] = "http://#{app}"
+      env["SERVER_PORT"] = 80
+      env["HTTP_HOST"]   = app
       env
     end
 
