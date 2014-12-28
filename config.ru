@@ -11,8 +11,8 @@ if ENV["HOMESTEADING_ROUTES"].nil?
   exit 1
 else
   ENV["HOMESTEADING_ROUTES"].split(",").each do |app|
-    route, port   = app.split(":")
-    ROUTES[route] = port
+    route, host   = app.split("@@@")
+    ROUTES[route] = host
   end
 end
 

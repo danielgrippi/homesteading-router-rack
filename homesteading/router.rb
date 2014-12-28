@@ -5,13 +5,14 @@ module Homesteading
       request     = Rack::Request.new(env)
       path_pieces = request.path.split("/").reject{ |i| i == "" }
 
-      if request.path == "/"
-        port = ROUTES["feed"]
+      if path_pieces.empty?
+        app = ROUTES["feed"]
       else
-        port = ROUTES[path_pieces.first]
+        app = ROUTES[path_pieces.first]
       end
 
-      env["HTTP_HOST"] = "localhost:#{port}"
+      env["SERVER_PORT"] = 80
+      env["HTTP_HOST"]   = app
       env
     end
 
