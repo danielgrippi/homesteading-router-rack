@@ -12,7 +12,6 @@ module Homesteading
       end
 
       app ||= ROUTES["feed"]
-
       host, port = app.split(":")
 
       if port.nil?
@@ -22,7 +21,6 @@ module Homesteading
       end
 
       env["HTTP_HOST"] = host
-
       env
     end
 
