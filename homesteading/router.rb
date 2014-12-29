@@ -11,6 +11,8 @@ module Homesteading
         app = ROUTES[path_pieces.first]
       end
 
+      app ||= ROUTES["feed"]
+
       host, port = app.split(":")
 
       if port.nil?
