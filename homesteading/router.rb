@@ -5,8 +5,7 @@ module Homesteading
       request     = Rack::Request.new(env)
       path_pieces = request.path.split("/").reject{ |i| i == "" }
 
-      app = path_pieces.empty? ? ROUTES["feed"] : ROUTES[path_pieces.first]
-
+      app   = path_pieces.empty? ? ROUTES["feed"] : ROUTES[path_pieces.first]
       app ||= ROUTES["feed"]
       host, port = app.split(":")
 
