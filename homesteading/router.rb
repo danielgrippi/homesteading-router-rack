@@ -11,8 +11,16 @@ module Homesteading
         app = ROUTES[path_pieces.first]
       end
 
-      env["SERVER_PORT"] = 80
-      env["HTTP_HOST"]   = app
+      host, port = app.split(":")
+
+      if port.nil?
+        env["SERVER_PORT"] = 80
+      else
+        env["SERVER_PORT"] = port
+      end
+
+      env["HTTP_HOST"] = host
+
       env
     end
 
