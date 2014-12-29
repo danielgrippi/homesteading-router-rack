@@ -10,7 +10,7 @@ A Rack based proxy server to coordinate multiple Homesteading apps as one site.
 
 ## Current Version
 
-0.0.3
+0.0.4
 
 
 ## Code Status
