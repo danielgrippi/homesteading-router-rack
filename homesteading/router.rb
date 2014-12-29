@@ -14,13 +14,8 @@ module Homesteading
       app ||= ROUTES["feed"]
       host, port = app.split(":")
 
-      if port.nil?
-        env["SERVER_PORT"] = 80
-      else
-        env["SERVER_PORT"] = port
-      end
-
-      env["HTTP_HOST"] = host
+      env["SERVER_PORT"] = port || 80
+      env["HTTP_HOST"]   = host
       env
     end
 
