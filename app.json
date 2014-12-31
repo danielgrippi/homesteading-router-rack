@@ -25,10 +25,5 @@
   },
   "addons": [
     "papertrail"
-  ],
-
-  "routes": {
-    "path": "",
-    "port": "3000"
-  }
+  ]
 }
